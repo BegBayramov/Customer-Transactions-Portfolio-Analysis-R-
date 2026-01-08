@@ -1,0 +1,99 @@
+---
+title: "Analiz Portofolio"
+author: "BAYRAMOV BEG"
+date: "2024-03-02"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE) 
+setwd("C:\\Users\\Beg\\Desktop\\okuw magistratura material\\SWISS BANK NOTES") 
+```
+
+
+```{r} 
+##Read data
+data <- read.csv("Portfolio_for_test1.csv")
+
+###Data validation
+data_p <- subset(data,
+                 select = -c(CB_COUNT,CB_AMOUNT,FRAUD_COUNT,FRAUD_AMOUNT))
+head(data_p)  
+
+
+            
+```
+
+```{r}
+###Analyzing customer activity
+
+###Transaction volume analysis 
+mean_amount <- mean(data_p$TRX_AMOUNT_LTM) 
+print(mean_amount)
+median_amount <- median(data_p$TRX_AMOUNT_LTM) 
+print(median_amount)
+hist(data_p$TRX_AMOUNT_LTM) 
+
+###Activity segmentation 
+online_transactions <- subset(data_p, ONLINEPOS == "ONLINE") 
+physical_transactions <- subset(data_p, ONLINEPOS == "POS")
+
+##Data visualization 
+library(ggplot2)
+ggplot(data_p, aes(x = TRX_COUNT_LTM, y = TRX_AMOUNT_LTM)) + geom_point()
+
+```
+
+```{r}
+###Analysis of financial performance 
+
+##Calculation of statistics
+mean_msc <- mean(data_p$MSC_LTM) 
+print(mean_msc)
+median_msc <- median(data_p$MSC_LTM) 
+print(median_msc)
+total_net_msc <- sum(data_p$NET_MSC_LTM)
+print(total_net_msc)
+standard_deviation_msc <- sd(data_p$MSC_LTM) 
+print(standard_deviation_msc)
+
+hist(data_p$MSC_LTM, main = "Gross profit histogram (MSC_LTM)", xlab = "Gross profit") 
+
+
+```
+
+```{r}
+####Returns analysis  
+
+###Calculation of statistics 
+
+mean_refunds <- mean(data_p$REFUND_AMOUNT_LTM) 
+print(mean_refunds)
+total_refunds <- sum(data_p$REFUND_AMOUNT_LTM)   
+print(total_refunds)
+
+####Data visualization 
+hist(data_p$REFUND_AMOUNT_LTM, main = "Histogram of the amount of returns", xlab = "Refund amount")
+```
+
+```{r}
+###Analyzing map types  
+
+# Counting the number of each card type
+card_types <- table(data_p$SCHEME)  
+print(card_types)
+
+# Calculation of the share of each card type 
+card_types_percentage <- prop.table(card_types) * 100  
+print(card_types_percentage)  
+
+barplot(card_types, main = "Number of transactions by card type", xlab = "Card type", ylab = "Number of transactions")
+pie(card_types_percentage, main = "Share of transactions by card type") 
+
+#### Comparison of card types by other parameters (e.g. transaction amount)
+library(ggplot2)
+ggplot(data_p, aes(x = SCHEME, y = TRX_AMOUNT_LTM)) + geom_boxplot() + labs(title = "Comparison of transaction amounts by card type")
+
+```
+
+
